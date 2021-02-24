@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using TacoChallenge.Data;
 using TacoChallenge.Models;
 
 namespace TacoChallenge.Controllers
@@ -14,10 +15,13 @@ namespace TacoChallenge.Controllers
     {
         private readonly ILogger _logger;
         public string Message { get; set; }
+        private IRepository<IEntity> dbRepository;
 
         public HomeController(ILoggerFactory logFactory)
         {
             _logger = logFactory.CreateLogger<HomeController>();
+
+            dbRepository = new JsonRepository<IEntity>();
         }
         public IActionResult Index()
         {
@@ -31,16 +35,18 @@ namespace TacoChallenge.Controllers
         {
             Message = $"About page called at {DateTime.UtcNow.ToLongTimeString()}";
             _logger.LogInformation(Message);
-            ViewData["Message"] = "Taco Challenge description page.";
 
-            return View();
+            ViewData["Message"] = "Taco Challenge description page.";
+            var item = (Resturant)dbRepository.GetItem(2380);
+
+            return View(item);
         }
 
         public IActionResult Contact()
         {
             ViewData["Message"] = "Taco Challenge contact page.";
-
-            return View();
+            var records = dbRepository.GetAllRecords();
+            return View(records);
         }
 
         public IActionResult Privacy()

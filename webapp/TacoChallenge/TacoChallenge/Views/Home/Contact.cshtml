@@ -1,8 +1,19 @@
-﻿@{
+﻿@model List<TacoChallenge.Data.IEntity>
+@{
     ViewData["Title"] = "Contact";
 }
 <h2>@ViewData["Title"]</h2>
 <h3>@ViewData["Message"]</h3>
+
+<h3>Elements count: @Model.Count элемента</h3>
+<pre>
+@foreach(var entity in Model)
+{
+    var resturant = (Resturant) entity;
+    @resturant.ToString()
+    <br />
+}
+</pre> 
 
 <address>
     One Microsoft Way<br />
@@ -11,7 +22,4 @@
     425.555.0100
 </address>
 
-<address>
-    <strong>Support:</strong> <a href="mailto:Support@example.com">Support@example.com</a><br />
-    <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
-</address>
+
