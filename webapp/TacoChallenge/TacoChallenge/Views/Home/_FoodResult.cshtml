@@ -1,0 +1,43 @@
+﻿@model List<FoodResultView>
+<h3>Offers:</h3>
+@foreach (FoodResultView foundResturantItem in Model)
+{
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-1">
+                        <img alt="" width="80" src="images@(foundResturantItem.LogoPath)" />
+                    </div>
+                    <div class="col-md-11">
+                        <h3 style="color: dimgray">
+                            @foundResturantItem.ResturantName - @foundResturantItem.Suburb - rated #@foundResturantItem.Rank overall
+                        </h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-11 col-lg-offset-1">
+                        @foreach (MenuItem foodItem in foundResturantItem.FoodMenuItems)
+                        {
+                            <div class="checkbox">
+                                <label style="color: black; font-weight:bold">
+                                    <input type="checkbox" class="" value="@foodItem.Id"/> @foodItem.Name - R@(foodItem.Price)
+                                </label>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+}
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <form method="post">
+                <button type="submit" class="btn btn-primary btn-success btn-lg">
+                    Order -
+                </button>
+            </form>
+        </div>
+    </div>
