@@ -8,8 +8,7 @@ namespace TacoChallenge.Data
 {
     public class JsonRepository<T> : IRepository<T> where T : class, IEntity
     {
-        
-        private static readonly string jsonSrcPath = "G:\\Project\\Orderin\\TacoChallenge\\webapp\\TacoChallenge\\TacoChallenge\\Assets\\SampleData.json";
+        private static readonly string jsonSrcPath = @"Assets/SampleData.json";
         /*string jsonSrcPath = Configuration.GetConnectionString("JsonDbSrc");
         public JsonRepository(IConfiguration configuration){Configuration = configuration;
         public IConfiguration Configuration { get; }*/

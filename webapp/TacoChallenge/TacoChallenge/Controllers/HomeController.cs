@@ -45,7 +45,17 @@ namespace TacoChallenge.Controllers
         public IActionResult Contact()
         {
             ViewData["Message"] = "Taco Challenge contact page.";
-            var records = dbRepository.GetAllRecords();
+
+            List<IEntity> records;
+            try
+            {
+                records = dbRepository.GetAllRecords();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                throw;
+            }
             return View(records);
         }
 
