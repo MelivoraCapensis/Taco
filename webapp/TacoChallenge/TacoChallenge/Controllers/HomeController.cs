@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TacoChallenge.Data;
+using TacoChallenge.Data.QueryParcerFactory;
 using TacoChallenge.Models;
 
 namespace TacoChallenge.Controllers
@@ -33,9 +34,10 @@ namespace TacoChallenge.Controllers
             if (searchField != null)
             {
                 //TODO: Make it as method and make a unit tests on it
-                var searchRequestArraySplit = searchField.Split(" in ");
-                ViewBag.SearchedFoodRequest = searchRequestArraySplit[0];
-                ViewBag.SearchedLocationRequest = searchRequestArraySplit.Length>1 ? searchRequestArraySplit[1] : "suburbs";
+                QueryParcerCreator foodQueryParcer = new FoodQueryParcerQueryParcerCreator();
+                string[] parcedData = foodQueryParcer.DoParce(searchField, new string[] { "Taco", "Grill" }, new string[] { "Cape Town", "Johannesburg" });
+                ViewBag.SearchedFoodRequest = parcedData[0];
+                ViewBag.SearchedLocationRequest = parcedData[1];
                 //ToDo_Ends
 
                 #region Dummy data for customize view
@@ -54,6 +56,8 @@ namespace TacoChallenge.Controllers
 
                 ViewBag.FoundFood = dummyFoundFoodItems;
                 #endregion
+
+                
             }
             return View();
         }
