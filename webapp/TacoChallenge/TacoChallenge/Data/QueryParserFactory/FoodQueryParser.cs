@@ -38,7 +38,7 @@ namespace TacoChallenge.Data.QueryParserFactory
             return new []{directFood, searchLocation};
         }
     }
-    class FoodQueryParserQueryParserCreator : QueryParserCreator
+    public class FoodQueryParserQueryParserCreator : QueryParserCreator
     {
         public override IQuerryParser FactoryMethod(string _searchField, string[] _assumptionalItems, string[] _assumptionalAreas)
         {

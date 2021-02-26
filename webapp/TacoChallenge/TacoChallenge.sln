@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28307.329
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TacoChallenge", "TacoChallenge\TacoChallenge.csproj", "{35C5E7FD-E2A8-4498-9683-9320F348CA2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TacoChallange.Tests", "TacoChallangeTests\TacoChallange.Tests.csproj", "{78EA9A2A-DE06-41D6-B83D-2DA0A3BB3A14}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TacoChallangeTests", "TacoChallangeTests\TacoChallangeTests.csproj", "{78EA9A2A-DE06-41D6-B83D-2DA0A3BB3A14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,6 +1,6 @@
 ﻿namespace TacoChallenge.Data.QueryParserFactory
 {
-    abstract class QueryParserCreator
+    public abstract class QueryParserCreator
     {
         public abstract IQuerryParser FactoryMethod(string _searchField, string[] _assumptionalItems, string[] _assumptionalAreas);
 
