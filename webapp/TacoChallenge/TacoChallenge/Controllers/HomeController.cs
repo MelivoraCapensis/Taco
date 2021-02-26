@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TacoChallenge.Data;
-using TacoChallenge.Data.QueryParcerFactory;
+using TacoChallenge.Data.QueryParserFactory;
 using TacoChallenge.Models;
 
 namespace TacoChallenge.Controllers
@@ -34,10 +34,10 @@ namespace TacoChallenge.Controllers
             if (searchField != null)
             {
                 //TODO: Make it as method and make a unit tests on it
-                QueryParcerCreator foodQueryParcer = new FoodQueryParcerQueryParcerCreator();
-                string[] parcedData = foodQueryParcer.DoParce(searchField, new string[] { "Taco", "Grill" }, new string[] { "Cape Town", "Johannesburg" });
-                ViewBag.SearchedFoodRequest = parcedData[0];
-                ViewBag.SearchedLocationRequest = parcedData[1];
+                QueryParserCreator foodQueryParser = new FoodQueryParserQueryParserCreator();
+                string[] parsedData = foodQueryParser.DoParse(searchField, new string[] { "Taco", "Grill" }, new string[] { "Cape Town", "Johannesburg" });
+                ViewBag.SearchedFoodRequest = parsedData[0];
+                ViewBag.SearchedLocationRequest = parsedData[1];
                 //ToDo_Ends
 
                 #region Dummy data for customize view

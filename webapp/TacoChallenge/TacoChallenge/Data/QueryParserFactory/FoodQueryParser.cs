@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
 
-namespace TacoChallenge.Data.QueryParcerFactory
+namespace TacoChallenge.Data.QueryParserFactory
 {
-    public class FoodQueryParser : IQuerryParcer
+    public class FoodQueryParser : IQuerryParser
     {
         private string query;
-        private readonly string[] splitters = new[] {" in "," within "," inside "," at ", " around "};
+        private readonly string[] splitters = new[] {" in "," within "," inside "," at ", " around ", " nearby "};
         public string[] assumptionalFoods;
         public string[] assumptionalLocations;
         public string directFood="";
@@ -19,7 +19,7 @@ namespace TacoChallenge.Data.QueryParcerFactory
             assumptionalLocations = _assumptionalLocations;
         }
 
-        public string[] Parce()
+        public string[] Parse()
         {
             if (query != null)
             { 
@@ -38,9 +38,9 @@ namespace TacoChallenge.Data.QueryParcerFactory
             return new []{directFood, searchLocation};
         }
     }
-    class FoodQueryParcerQueryParcerCreator : QueryParcerCreator
+    class FoodQueryParserQueryParserCreator : QueryParserCreator
     {
-        public override IQuerryParcer FactoryMethod(string _searchField, string[] _assumptionalItems, string[] _assumptionalAreas)
+        public override IQuerryParser FactoryMethod(string _searchField, string[] _assumptionalItems, string[] _assumptionalAreas)
         {
             return new FoodQueryParser(_searchField, _assumptionalItems, _assumptionalAreas);
         }
