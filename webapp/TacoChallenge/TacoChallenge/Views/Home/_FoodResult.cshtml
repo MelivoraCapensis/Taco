@@ -1,4 +1,5 @@
 ﻿@model List<FoodResultView>
+@{ double orderTotalPrice = 0;}
 <h3>Offers:</h3>
 @foreach (FoodResultView foundResturantItem in Model)
 {
@@ -21,7 +22,7 @@
                         {
                             <div class="checkbox">
                                 <label style="color: black; font-weight:bold">
-                                    <input type="checkbox" class="" value="@foodItem.Id"/> @foodItem.Name - R@(foodItem.Price)
+                                    <input type="checkbox" class="foodItemCheck" data-price="@foodItem.Price" value="@foodItem.Id" /> @foodItem.Name - R@(foodItem.Price)
                                 </label>
                             </div>
                         }
@@ -32,12 +33,38 @@
 
     </div>
 }
-    <div class="row">
-        <div class="col-md-12 text-center">
-            <form method="post">
-                <button type="submit" class="btn btn-primary btn-success btn-lg">
-                    Order -
-                </button>
-            </form>
-        </div>
+<div class="row">
+    <div class="col-md-12 text-center">
+        <form method="post">
+            <button type="submit" id="orderSubmitBtn" data-totalSum="" class="btn btn-primary btn-success btn-lg disabled">
+                Order
+            </button>
+        </form>
     </div>
+</div>
+
+<script>
+    var orderPrice=@orderTotalPrice;
+    $(document).ready(function () {
+        $('.foodItemCheck').click(function () {
+            if (this.checked) {
+                orderPrice = Math.round((orderPrice + parseFloat($(this).attr("data-price")))*100)/100;
+                handleButtonStateByPrice("#orderSubmitBtn", orderPrice);
+            } else {
+                orderPrice = Math.round((orderPrice - parseFloat($(this).attr("data-price")))*100)/100;
+                handleButtonStateByPrice("#orderSubmitBtn", orderPrice);
+            }
+        
+            function handleButtonStateByPrice(_buttonSelector, _orderPrice) {
+                if (orderPrice) {
+                    $(_buttonSelector).removeClass("disabled");
+                    $(_buttonSelector).text("Order - R" + _orderPrice);
+                }
+                else {
+                    $(_buttonSelector).text("Order");
+                    $(_buttonSelector).addClass("disabled");
+                }
+            }
+        });
+    });
+</script>
