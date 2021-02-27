@@ -35,7 +35,41 @@ namespace TacoChallenge.Controllers
             {
                 //TODO: Make it as method and make a unit tests on it
                 QueryParserCreator foodQueryParser = new FoodQueryParserQueryParserCreator();
+                List<Resturant> resturants = dbRepository.GetAllRecords().Cast<Resturant>().ToList();
+
+                #region Working dummy search
+                 List<List<string>> dumm1 = new List<List<string>>()
+                {
+                    new List<string>(){"Vegetarian Burger","Vegetarian Stir Fry & Rice","Vegetarian Schwarma"},
+                    new List<string>(){"Vegetarian Burger", "Vegetarian Stir Fry & Rice"},
+                    new List<string>(){"Vegetarian Burger", "Stir Fry & Rice", "Schwarma"}
+                };
+
+                var res = from item in dumm1
+                        orderby item.Count(x=>x.Contains("Vegetarian"))
+                          select item;
+
+                // Test Comporator by food name
+                var item1 = new List<Resturant>()
+                {
+                    (Resturant) dbRepository.GetItem(1491), //2
+                    (Resturant) dbRepository.GetItem(1029), //1
+                    (Resturant) dbRepository.GetItem(2380) //3
+
+                };
+                item1.Sort(new FoodNameComporator("Vegetarian"));
+                #endregion
                 string[] parsedData = foodQueryParser.DoParse(searchField, new string[] { "Taco", "Grill" }, new string[] { "Cape Town", "Johannesburg" });
+                //.Sort(x => x.Count(s => s.Contains("Vegetarian")));
+                var resturantsWithRequestedFood = (from resturant in resturants
+                                        from category in resturant.Categories
+                                        from menuItem in category.MenuItems
+                                        where menuItem.Name.Contains(parsedData[0])
+                                         select resturant).ToList();
+
+                resturantsWithRequestedFood.Sort(new FoodNameComporator(parsedData[0]));
+
+
                 ViewBag.SearchedFoodRequest = parsedData[0];
                 ViewBag.SearchedLocationRequest = parsedData[1];
                 //ToDo_Ends
