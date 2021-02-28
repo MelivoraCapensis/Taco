@@ -35,14 +35,14 @@ namespace TacoChallenge.Controllers
             {
                 //TODO: Make it as method and make a unit tests on it
                 QueryParserCreator foodQueryParser = new FoodQueryParserQueryParserCreator();
-                List<Resturant> resturants = dbRepository.GetAllRecords().Cast<Resturant>().ToList();
+                List<Resturant> restaurants = dbRepository.GetAllRecords().Cast<Resturant>().ToList();
 
                 #region Working dummy search
                  List<List<string>> dumm1 = new List<List<string>>()
                 {
                     new List<string>(){"Vegetarian Burger","Vegetarian Stir Fry & Rice","Vegetarian Schwarma"},
                     new List<string>(){"Vegetarian Burger", "Vegetarian Stir Fry & Rice"},
-                    new List<string>(){"Vegetarian Burger", "Stir Fry & Rice", "Schwarma"}
+                    new List<string>(){"Burger", "Stir Fry & Rice", "Schwarma"}
                 };
 
                 var res = from item in dumm1
@@ -59,19 +59,53 @@ namespace TacoChallenge.Controllers
                 };
                 item1.Sort(new FoodNameComporator("Vegetarian"));
                 #endregion
-                string[] parsedData = foodQueryParser.DoParse(searchField, new string[] { "Taco", "Grill" }, new string[] { "Cape Town", "Johannesburg" });
-                //.Sort(x => x.Count(s => s.Contains("Vegetarian")));
-                var resturantsWithRequestedFood = (from resturant in resturants
-                                        from category in resturant.Categories
-                                        from menuItem in category.MenuItems
-                                        where menuItem.Name.Contains(parsedData[0])
-                                         select resturant).ToList();
+                var resturantsWithRequestedFood = new List<Resturant>();
+                string[] parsedData = foodQueryParser.DoParse(searchField, null, null);
 
-                resturantsWithRequestedFood.Sort(new FoodNameComporator(parsedData[0]));
+                // With custom food/location assumptions set
+                //string[] parsedData = foodQueryParser.DoParse(searchField, new string[] { "Taco", "Vegetarian", "Grill" }, new string[] { "Cape Town", "Johannesburg" });
+
+                string parsedMeal = parsedData[0];
+                string parsedLocation = parsedData[1];
+
+                // Get restaurants, witch has searched meal
+                foreach (Resturant resturant in restaurants)
+                {
+                    foreach (var category in resturant.Categories)
+                    {
+                        foreach (var menuItem in category.MenuItems)
+                        {
+                            if ((menuItem.Name.Contains(parsedMeal) || category.Name.Contains(parsedMeal)) && 
+                                resturantsWithRequestedFood.Where(x=>x.Id==resturant.Id).ToList().Count==0) // to avoid added restaurants duplication
+                            {
+                                resturantsWithRequestedFood.Add(resturant); // Select restaurant with requested meal
+                            }
+                        }
+                    }
+                }
+                resturantsWithRequestedFood.Sort(new FoodNameComporator(parsedMeal)); //sort by count of relevant meal 
+
+                var t = resturantsWithRequestedFood
+                    .Where(x => x.Id == dbRepository.GetItem(1491).Id)
+                    .ToList().Count;
+                //
+                //OR Get restaurants, witch has searched meal, sorted by count of relevant meal than by rank
+                //
+                /*var restaurantsRelevantSorted = restaurants.Select(x =>
+                        new
+                        {
+                            _countOfAvailableMeal = x.Categories.SelectMany(c => c.MenuItems)
+                                .Count(cI => cI.Name.Contains(parsedMeal)),
+                            _restaurantWithSearchedMeal = x
+                        })
+                    .Where(x => x._countOfAvailableMeal > 0)
+                    .OrderByDescending(x => x._countOfAvailableMeal).ThenBy(x =>x._restaurantWithSearchedMeal.Rank )
+                    .Select(r => r._restaurantWithSearchedMeal)
+                    .ToList();*/
 
 
-                ViewBag.SearchedFoodRequest = parsedData[0];
-                ViewBag.SearchedLocationRequest = parsedData[1];
+                ViewBag.SearchedFoodRequest = parsedMeal;
+                ViewBag.SearchedLocationRequest = parsedLocation;
                 //ToDo_Ends
 
                 #region Dummy data for customize view

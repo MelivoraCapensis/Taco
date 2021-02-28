@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace TacoChallenge.Data.QueryParserFactory
@@ -7,12 +8,13 @@ namespace TacoChallenge.Data.QueryParserFactory
     {
         private string query;
         private readonly string[] splitters = new[] {" in "," within "," inside "," at ", " around ", " nearby "};
+        private Dictionary<string,List<string>> foodAliases = new Dictionary<string, List<string>>() { {"Vegetarian", new List<string> {"veg","Vegan"}}};
         public string[] assumptionalFoods;
         public string[] assumptionalLocations;
         public string directFood="";
         public string searchLocation = "";
 
-        public FoodQueryParser(string _query, string[] _assumptionalFoods, string[] _assumptionalLocations)
+        public FoodQueryParser(string _query, string[] _assumptionalFoods = null, string[] _assumptionalLocations = null)
         {
             query = _query;
             assumptionalFoods = _assumptionalFoods;
@@ -23,20 +25,37 @@ namespace TacoChallenge.Data.QueryParserFactory
         {
             if (query != null)
             { 
-                var parsedString = query.Split(splitters, StringSplitOptions.None);
-                if (parsedString.Length > 1) //Does querry has enought of search data
+                var splittedString = query.Split(splitters, StringSplitOptions.None);
+                string queriedMeal = splittedString[0];
+                string queriedLocation = splittedString[1];
+                //TryToFindAssumptions(queriedMeal, queriedLocation);
+
+                if (splittedString.Length > 1) //Does querry has enought of search data
                 {
-                    directFood = assumptionalFoods.Contains(parsedString[0]) ? parsedString[0] : "";
-                    searchLocation = assumptionalLocations.Contains(parsedString[1]) ? parsedString[1] : "";
+                    directFood = queriedMeal;
+                    searchLocation = queriedLocation;
                 }
                 else
                 {
-                    directFood = parsedString[0];
+                    directFood = queriedMeal;
                     searchLocation = "suburbs";
                 }
             }
             return new []{directFood, searchLocation};
         }
+
+        // ToDo: Implementation of food unification. To be look like google search))
+        private void TryToFindAssumptions(string queriedMeal, string queriedLocation)
+        {
+            if (assumptionalFoods != null && assumptionalFoods.Length > 0)
+                if (assumptionalFoods.Contains(queriedMeal))
+                    directFood = queriedMeal;
+                else
+                directFood = foodAliases.Where(x => x.Value.Contains(queriedMeal)).Select(x => x.Key).ToString(); // try to find by alias
+
+                searchLocation = assumptionalLocations.Contains(queriedLocation) ? queriedLocation : "";
+        }
+
     }
     public class FoodQueryParserQueryParserCreator : QueryParserCreator
     {

@@ -35,6 +35,10 @@ namespace TacoChallenge.Data
                 return -1;
             if (xFoodsMachCount < yFoodsMachCount)
                 return 1;
+            if(x.Rank > y.Rank)
+                return -1;
+            if (x.Rank < y.Rank)
+                return 1;
             return 0;
         }
     }
