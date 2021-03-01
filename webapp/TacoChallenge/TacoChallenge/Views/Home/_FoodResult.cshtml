@@ -1,46 +1,46 @@
-﻿@*@model List<FoodResultView>*@
-@model List<Resturant>
+﻿@model List<FoodResultView>
+@*@model List<Resturant>*@
 @{ double orderTotalPrice = 0;}
 <h3>Offers:</h3>
-@foreach (Resturant foundResturantItem in Model)
+@foreach (FoodResultView foundResturantItem in Model)
 {
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-1">
+                    <img alt="" width="80" src="images@(foundResturantItem.LogoPath)" />
+                </div>
+                <div class="col-md-11">
+                    <h3 style="color: dimgray">
+                        @foundResturantItem.Name - @foundResturantItem.Suburb - rated #@foundResturantItem.Rank overall
+                    </h3>
+                </div>
+            </div>
+            @foreach (Category category in foundResturantItem.Categories)
+            {
                 <div class="row">
-                    <div class="col-md-1">
-                        <img alt="" width="80" src="images@(foundResturantItem.LogoPath)" />
-                    </div>
-                    <div class="col-md-11">
-                        <h3 style="color: dimgray">
-                            @foundResturantItem.Name - @foundResturantItem.Suburb - rated #@foundResturantItem.Rank overall
-                        </h3>
+                    <div class="col-md-11 col-lg-offset-1">
+                        <h4>@category.Name</h4>
                     </div>
                 </div>
-                @foreach (Category category in foundResturantItem.Categories)
-                {
-                    <div class="row">
-                        <div class="col-md-11 col-lg-offset-1">
-                              <h4>@category.Name</h4>
-                        </div>
+                <div class="row">
+                    <div class="col-md-11 col-lg-offset-1">
+                        @foreach (MenuItem foodItem in category.MenuItems)
+                        {
+                            <div class="checkbox">
+                                <label style="color: black; font-weight: bold">
+                                    <input type="checkbox" class="foodItemCheck" data-price="@foodItem.Price" value="@foodItem.Id" /> @foodItem.Name - R@(foodItem.Price)
+                                </label>
+                            </div>
+                        }
                     </div>
-                    <div class="row">
-                        <div class="col-md-11 col-lg-offset-1">
-                            @foreach (MenuItem foodItem in category.MenuItems)
-                            {
-                                <div class="checkbox">
-                                    <label style="color: black; font-weight: bold">
-                                        <input type="checkbox" class="foodItemCheck" data-price="@foodItem.Price" value="@foodItem.Id" /> @foodItem.Name - R@(foodItem.Price)
-                                    </label>
-                                </div>
-                            }
-                        </div>
-                    </div>
-                }
-            </div>
+                </div>
+            }
         </div>
-
     </div>
+
+</div>
 }
 <div class="row">
     <div class="col-md-12 text-center">

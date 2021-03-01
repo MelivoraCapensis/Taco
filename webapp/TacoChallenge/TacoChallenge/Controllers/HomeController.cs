@@ -73,20 +73,65 @@ namespace TacoChallenge.Controllers
                 {
                     foreach (var category in resturant.Categories)
                     {
-                        foreach (var menuItem in category.MenuItems)
-                        {
-                            if ((menuItem.Name.Contains(parsedMeal) || category.Name.Contains(parsedMeal)) && 
-                                resturantsWithRequestedFood.Where(x=>x.Id==resturant.Id).ToList().Count==0) // to avoid added restaurants duplication
-                            {
-                                resturantsWithRequestedFood.Add(resturant); // Select restaurant with requested meal
-                            }
-                        }
+                        if (category.Name.Contains(parsedMeal) && 
+                            resturantsWithRequestedFood.Where(x => x.Id == resturant.Id).ToList().Count == 0) // to avoid added restaurants duplication
+                            resturantsWithRequestedFood.Add(resturant); // Select restaurant with requested meal
+                        else
+                            foreach (var menuItem in category.MenuItems)
+                                if (menuItem.Name.Contains(parsedMeal) && 
+                                    resturantsWithRequestedFood.Where(x=>x.Id==resturant.Id).ToList().Count==0) // to avoid added restaurants duplication
+                                    resturantsWithRequestedFood.Add(resturant); // Select restaurant with requested meal
                     }
                 }
+
+                var resturantsOnlyWithRequestedFood = new List<FoodResultView>();
+                // Get restaurants, witch has only searched meal. Just searched meal
+                foreach (var resturant in restaurants)
+                {
+                    var restaurantViewItem = new FoodResultView(){Categories = new List<Category>()};
+                    foreach (var category in resturant.Categories)
+                    {
+                        if (category.Name.Contains(parsedMeal))
+                        {
+                            //Case when category name contains searched meal->add all menu items
+                            restaurantViewItem.Categories.Add(new Category()
+                            {
+                                Name = category.Name,
+                                MenuItems = category.MenuItems
+                            });
+                            restaurantViewItem.Name = resturant.Name;
+                            restaurantViewItem.Suburb = resturant.Suburb;
+                            restaurantViewItem.Rank = resturant.Rank;
+                            restaurantViewItem.LogoPath = resturant.LogoPath;
+                            continue;
+                        }
+
+                        var categoryViewItem = new Category()
+                            { Name = category.Name, MenuItems = new List<MenuItem>() };
+
+                        foreach (var menuItem in category.MenuItems)
+                            if (menuItem.Name.Contains(parsedMeal)) // to avoid added restaurants duplication
+                                categoryViewItem.MenuItems.Add(menuItem);
+
+                        if (categoryViewItem.MenuItems.Any())
+                        {
+                            restaurantViewItem.Categories.Add(categoryViewItem);
+                            restaurantViewItem.Name = resturant.Name;
+                            restaurantViewItem.Suburb = resturant.Suburb;
+                            restaurantViewItem.Rank = resturant.Rank;
+                            restaurantViewItem.LogoPath = resturant.LogoPath;
+                        }
+                    }
+
+                    if (restaurantViewItem.Categories.Any())
+                        resturantsOnlyWithRequestedFood.Add(restaurantViewItem);
+                }
+
                 resturantsWithRequestedFood.Sort(new FoodNameComporator(parsedMeal)); //sort by count of relevant meal 
+                resturantsOnlyWithRequestedFood.Sort(new FoodVeiwNameComporator(parsedMeal));
 
                 //
-                //OR Get restaurants, witch has searched meal, sorted by count of relevant meal than by rank
+                //OR same but LINQ: Get restaurants, witch has searched meal, sorted by count of relevant meal than by rank
                 //
                 /*var restaurantsRelevantSorted = restaurants.Select(x =>
                         new
@@ -111,9 +156,9 @@ namespace TacoChallenge.Controllers
                 var rest1 = (Resturant)dbRepository.GetItem(2380);
                 var rest2 = (Resturant)dbRepository.GetItem(2438);
                 var rest3 = (Resturant)dbRepository.GetItem(935);
-                FoodResultView result1 = new FoodResultView(){ResturantName = rest1.Name, Suburb = rest1.Suburb, Rank = rest1.Rank, FoodMenuItems = rest1.Categories[0].MenuItems, LogoPath = rest1.LogoPath};
-                FoodResultView result2 = new FoodResultView() { ResturantName = rest2.Name, Suburb = rest2.Suburb, Rank = rest2.Rank, FoodMenuItems = rest2.Categories[0].MenuItems, LogoPath = rest2.LogoPath };
-                FoodResultView result3 = new FoodResultView() { ResturantName = rest3.Name, Suburb = rest3.Suburb, Rank = rest3.Rank, FoodMenuItems = rest3.Categories[0].MenuItems, LogoPath = rest3.LogoPath };
+                FoodResultView result1 = new FoodResultView(){Name = rest1.Name, Suburb = rest1.Suburb, Rank = rest1.Rank, FoodMenuItems = rest1.Categories[0].MenuItems, LogoPath = rest1.LogoPath};
+                FoodResultView result2 = new FoodResultView() { Name = rest2.Name, Suburb = rest2.Suburb, Rank = rest2.Rank, FoodMenuItems = rest2.Categories[0].MenuItems, LogoPath = rest2.LogoPath };
+                FoodResultView result3 = new FoodResultView() { Name = rest3.Name, Suburb = rest3.Suburb, Rank = rest3.Rank, FoodMenuItems = rest3.Categories[0].MenuItems, LogoPath = rest3.LogoPath };
 
                 dummyFoundFoodItems.Add(result1);
                 dummyFoundFoodItems.Add(result2);
@@ -122,7 +167,7 @@ namespace TacoChallenge.Controllers
                 ViewBag.FoundFood = dummyFoundFoodItems;*/
                 #endregion
 
-                ViewBag.FoundRestaurantsWithFood = resturantsWithRequestedFood;
+                ViewBag.FoundRestaurantsWithFood = resturantsOnlyWithRequestedFood;
             }
             return View();
         }
