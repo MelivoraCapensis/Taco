@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Successfully ordered";
+}
+<h2>@ViewData["Title"]</h2>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6 col-lg-offset-3" style="border:1px solid #ddd">
+            <h3 class="" style="border-bottom: 1px solid grey; padding-bottom: 10px;">Success! Food is coming up soon!</h3>
+            <blockquote class="bg-warning text-center">You order for <strong>R @ViewBag.OrderSum</strong> has been placed! <br /> Leave the rest up to the chefs and our drivers!</blockquote>
+            <div class="text-center">
+                <a class="btn btn-success btn-lg" style="margin-bottom: 10px;" asp-controller="Home" asp-action="Index">OK</a> @*onclick="location.href='@Url.Action("Index", "HomeController")'"*@
+            </div>
+        </div>
+    </div>
+</div>

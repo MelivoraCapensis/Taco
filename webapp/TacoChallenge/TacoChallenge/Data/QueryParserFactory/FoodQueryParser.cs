@@ -27,11 +27,13 @@ namespace TacoChallenge.Data.QueryParserFactory
             { 
                 var splittedString = query.Split(splitters, StringSplitOptions.None);
                 string queriedMeal = splittedString[0];
-                string queriedLocation = splittedString[1];
+                string queriedLocation = "";
                 //TryToFindAssumptions(queriedMeal, queriedLocation);
 
                 if (splittedString.Length > 1) //Does querry has enought of search data
                 {
+                    queriedLocation = splittedString[1];
+
                     directFood = queriedMeal;
                     searchLocation = queriedLocation;
                 }

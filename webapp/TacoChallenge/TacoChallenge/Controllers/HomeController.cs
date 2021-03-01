@@ -85,9 +85,6 @@ namespace TacoChallenge.Controllers
                 }
                 resturantsWithRequestedFood.Sort(new FoodNameComporator(parsedMeal)); //sort by count of relevant meal 
 
-                var t = resturantsWithRequestedFood
-                    .Where(x => x.Id == dbRepository.GetItem(1491).Id)
-                    .ToList().Count;
                 //
                 //OR Get restaurants, witch has searched meal, sorted by count of relevant meal than by rank
                 //
@@ -110,7 +107,7 @@ namespace TacoChallenge.Controllers
 
                 #region Dummy data for customize view
                 //TODO: Make an adapter for Translation Resturant to FoodResultView or just translate it in FoodResultView ctor
-                List<FoodResultView> dummyFoundFoodItems = new List<FoodResultView>();
+                /*List<FoodResultView> dummyFoundFoodItems = new List<FoodResultView>();
                 var rest1 = (Resturant)dbRepository.GetItem(2380);
                 var rest2 = (Resturant)dbRepository.GetItem(2438);
                 var rest3 = (Resturant)dbRepository.GetItem(935);
@@ -122,28 +119,22 @@ namespace TacoChallenge.Controllers
                 dummyFoundFoodItems.Add(result2);
                 dummyFoundFoodItems.Add(result3);
 
-                ViewBag.FoundFood = dummyFoundFoodItems;
+                ViewBag.FoundFood = dummyFoundFoodItems;*/
                 #endregion
 
-                
+                ViewBag.FoundRestaurantsWithFood = resturantsWithRequestedFood;
             }
             return View();
         }
-        /*[HttpPost]
-        public IActionResult Index(string searchField)
+        [HttpPost]
+        public IActionResult Index(double orderTotalSum)
         {
-            Message = $"Index page called by GET at {DateTime.UtcNow.ToLongTimeString()}";
+            Message = $"Index page called by POST at {DateTime.UtcNow.ToLongTimeString()}";
+            ViewBag.OrderSum = orderTotalSum;
+
             _logger.LogInformation(Message);
-
-            if (searchField != null)
-            {
-                var searchRequestArraySplit = searchField.Split(" in ");
-                ViewBag.SearchedFoodRequest = searchRequestArraySplit[0];
-                ViewBag.SearchedLocationRequest = searchRequestArraySplit[1];
-            }
-
-            return View();
-        }*/
+            return View("Success");
+        }
 
         public ActionResult SearchFood(string searchRequest)
         {
@@ -151,35 +142,7 @@ namespace TacoChallenge.Controllers
             return PartialView("_FoodResult");
         }
 
-        public IActionResult About()
-        {
-            Message = $"About page called at {DateTime.UtcNow.ToLongTimeString()}";
-            _logger.LogInformation(Message);
-
-            ViewData["Message"] = "Taco Challenge description page.";
-            var item = (Resturant)dbRepository.GetItem(2380);
-
-            return View(item);
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Taco Challenge contact page.";
-
-            List<IEntity> records;
-            try
-            {
-                records = dbRepository.GetAllRecords();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message);
-                throw;
-            }
-            return View(records);
-        }
-
-        public IActionResult Privacy()
+        public IActionResult Success()
         {
             return View();
         }

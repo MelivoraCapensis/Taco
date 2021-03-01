@@ -28,7 +28,8 @@
 
     <div class="row">
         <div class="col-lg-12">
-            @await Html.PartialAsync("_FoodResult", ViewBag.FoundFood as List<FoodResultView>)
+            @*@await Html.PartialAsync("_FoodResult", ViewBag.FoundFood as List<FoodResultView>)*@
+            @await Html.PartialAsync("_FoodResult", ViewBag.FoundRestaurantsWithFood as List<Resturant>)
         </div>
     </div>
 }

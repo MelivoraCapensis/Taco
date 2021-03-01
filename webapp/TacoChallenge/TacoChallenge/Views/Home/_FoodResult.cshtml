@@ -1,7 +1,8 @@
-﻿@model List<FoodResultView>
+﻿@*@model List<FoodResultView>*@
+@model List<Resturant>
 @{ double orderTotalPrice = 0;}
 <h3>Offers:</h3>
-@foreach (FoodResultView foundResturantItem in Model)
+@foreach (Resturant foundResturantItem in Model)
 {
     <div class="container-fluid">
         <div class="row">
@@ -12,22 +13,30 @@
                     </div>
                     <div class="col-md-11">
                         <h3 style="color: dimgray">
-                            @foundResturantItem.ResturantName - @foundResturantItem.Suburb - rated #@foundResturantItem.Rank overall
+                            @foundResturantItem.Name - @foundResturantItem.Suburb - rated #@foundResturantItem.Rank overall
                         </h3>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-11 col-lg-offset-1">
-                        @foreach (MenuItem foodItem in foundResturantItem.FoodMenuItems)
-                        {
-                            <div class="checkbox">
-                                <label style="color: black; font-weight:bold">
-                                    <input type="checkbox" class="foodItemCheck" data-price="@foodItem.Price" value="@foodItem.Id" /> @foodItem.Name - R@(foodItem.Price)
-                                </label>
-                            </div>
-                        }
+                @foreach (Category category in foundResturantItem.Categories)
+                {
+                    <div class="row">
+                        <div class="col-md-11 col-lg-offset-1">
+                              <h4>@category.Name</h4>
+                        </div>
                     </div>
-                </div>
+                    <div class="row">
+                        <div class="col-md-11 col-lg-offset-1">
+                            @foreach (MenuItem foodItem in category.MenuItems)
+                            {
+                                <div class="checkbox">
+                                    <label style="color: black; font-weight: bold">
+                                        <input type="checkbox" class="foodItemCheck" data-price="@foodItem.Price" value="@foodItem.Id" /> @foodItem.Name - R@(foodItem.Price)
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
             </div>
         </div>
 
@@ -39,6 +48,7 @@
             <button type="submit" id="orderSubmitBtn" data-totalSum="" class="btn btn-primary btn-success btn-lg disabled">
                 Order
             </button>
+            <input type="hidden" id="orderTotalSum" name="orderTotalSum"/>
         </form>
     </div>
 </div>
@@ -50,11 +60,13 @@
             if (this.checked) {
                 orderPrice = Math.round((orderPrice + parseFloat($(this).attr("data-price")))*100)/100;
                 handleButtonStateByPrice("#orderSubmitBtn", orderPrice);
+                $("#orderTotalSum").val(orderPrice);
             } else {
                 orderPrice = Math.round((orderPrice - parseFloat($(this).attr("data-price")))*100)/100;
                 handleButtonStateByPrice("#orderSubmitBtn", orderPrice);
+                $("#orderTotalSum").val(orderPrice);
             }
-        
+
             function handleButtonStateByPrice(_buttonSelector, _orderPrice) {
                 if (orderPrice) {
                     $(_buttonSelector).removeClass("disabled");
