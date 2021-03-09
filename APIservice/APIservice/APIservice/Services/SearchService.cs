@@ -9,7 +9,7 @@ namespace APIservice.Services
 {
     public class SearchService : ISearchService
     {
-        public List<FoodResultView> PerformSearch(string searchRequest, IRepository<IEntity> dbRepository)
+        public List<FoodResultView> PerformSearch(string searchRequest, IRepository<IEntity> dbRepository, out string parsedMeal, out string parsedLocation)
         {
                 if (searchRequest != null && dbRepository != null)
                 {
@@ -17,39 +17,14 @@ namespace APIservice.Services
                     QueryParserCreator foodQueryParser = new FoodQueryParserQueryParserCreator();
                     dbRepository = new JsonRepository<IEntity>();
                     var restaurants = dbRepository.GetAllRecords().Cast<Resturant>().ToList();
-
-                    #region Working dummy search
-
-                    var dumm1 = new List<List<string>>()
-                    {
-                        new List<string>() {"Vegetarian Burger", "Vegetarian Stir Fry & Rice", "Vegetarian Schwarma"},
-                        new List<string>() {"Vegetarian Burger", "Vegetarian Stir Fry & Rice"},
-                        new List<string>() {"Burger", "Stir Fry & Rice", "Schwarma"}
-                    };
-
-                    var res = from item in dumm1
-                              orderby item.Count(x => x.Contains("Vegetarian"))
-                              select item;
-
-                    // Test Comporator by food name
-                    var item1 = new List<Resturant>()
-                    {
-                        (Resturant) dbRepository.GetItem(1491), //2
-                        (Resturant) dbRepository.GetItem(1029), //1
-                        (Resturant) dbRepository.GetItem(2380) //3
-                    };
-                    item1.Sort(new FoodNameComporator("Vegetarian"));
-
-                    #endregion
-
                     var resturantsWithRequestedFood = new List<Resturant>();
                     var parsedData = foodQueryParser.DoParse(searchRequest, null, null);
 
-                    // With custom food/location assumptions set
-                    //string[] parsedData = foodQueryParser.DoParse(searchField, new string[] { "Taco", "Vegetarian", "Grill" }, new string[] { "Cape Town", "Johannesburg" });
+                // With custom food/location assumptions set
+                //string[] parsedData = foodQueryParser.DoParse(searchField, new string[] { "Taco", "Vegetarian", "Grill" }, new string[] { "Cape Town", "Johannesburg" });
 
-                    var parsedMeal = parsedData[0];
-                    var parsedLocation = parsedData[1];
+                    parsedMeal = parsedData[0];
+                    parsedLocation = parsedData[1];
 
                     // Get restaurants, witch has searched meal
                     foreach (var resturant in restaurants)
@@ -125,10 +100,6 @@ namespace APIservice.Services
                                 .OrderByDescending(x => x._countOfAvailableMeal).ThenBy(x =>x._restaurantWithSearchedMeal.Rank )
                                 .Select(r => r._restaurantWithSearchedMeal)
                                 .ToList();*/
-
-
-                    //ViewBag.SearchedFoodRequest = parsedMeal;
-                    //ViewBag.SearchedLocationRequest = parsedLocation;
                     //ToDo_Ends
 
                     #region Dummy data for customize view
@@ -150,9 +121,11 @@ namespace APIservice.Services
 
                     #endregion
 
-                    //ViewBag.FoundRestaurantsWithFood = resturantsOnlyWithRequestedFood;
                     return resturantsOnlyWithRequestedFood;
                 }
+
+                parsedMeal = null;
+                parsedLocation = null;
                 return null;
             }
     }

@@ -6,6 +6,6 @@ namespace APIservice.Services
 {
     public interface ISearchService
     {
-        List<FoodResultView> PerformSearch(string searchRequest, IRepository<IEntity> dbRepository);
+        List<FoodResultView> PerformSearch(string searchRequest, IRepository<IEntity> dbRepository, out string parsedMeal, out string parsedLocation);
     }
 }
