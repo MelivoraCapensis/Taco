@@ -1,5 +1,3 @@
-using System;
-
 namespace TacoChallenge.Models
 {
     public class ErrorViewModel

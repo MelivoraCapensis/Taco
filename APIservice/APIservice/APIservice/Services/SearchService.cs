@@ -3,7 +3,6 @@ using System.Linq;
 using APIservice.Models;
 using APIservice.Repositories;
 using APIservice.Services.QueryParserFactory;
-using Microsoft.AspNetCore.Mvc;
 
 namespace APIservice.Services
 {

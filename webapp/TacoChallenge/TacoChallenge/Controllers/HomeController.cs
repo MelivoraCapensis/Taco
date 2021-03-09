@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using TacoChallenge.Data;
-using TacoChallenge.Data.QueryParserFactory;
 using TacoChallenge.Models;
-using System.Net.Http.Formatting;
 
 namespace TacoChallenge.Controllers
 {
@@ -19,13 +13,10 @@ namespace TacoChallenge.Controllers
     {
         private readonly ILogger _logger;
         public string Message { get; set; }
-        private IRepository<IEntity> dbRepository;
 
         public HomeController(ILoggerFactory logFactory)
         {
             _logger = logFactory.CreateLogger<HomeController>();
-
-            dbRepository = new JsonRepository<IEntity>();
         }
 
         public IActionResult Index(string searchField)
@@ -38,7 +29,7 @@ namespace TacoChallenge.Controllers
             {
                 string apiUrl = "http://localhost:55667/main/FoodRestuarantsByQuery";
                 string urlParams = "?searchRequest=" + searchField;
-                var resturantsOnlyWithRequestedFood = new List<FoodResultView>();
+                List<FoodResultView> resturantsOnlyWithRequestedFood;
                 string parsedMeal = "";
                 string parsedLocation = "";
 
